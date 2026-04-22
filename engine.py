@@ -18,7 +18,7 @@ def init_engine():
     # Только поддерживаемые опции
     engine.configure({
         "Skill Level": 20,
-        "Hash": 64,
+        "Hash": 128,
         "Threads": 1,
         "Move Overhead": 50,
     })
