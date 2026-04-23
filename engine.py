@@ -6,30 +6,13 @@ engine = None
 
 def init_engine():
     global engine
-    # Ищем бинарник (он может называться engine, stockfish, berserk_engine, clover_engine)
-    binary = "./engine"
-    if not os.path.exists(binary):
-        for name in ["./stockfish", "./berserk_engine", "./berserk", "./clover_engine", "./clover"]:
-            if os.path.exists(name):
-                binary = name
-                break
-    print(f"Loading engine from {binary}")
-    engine = chess.engine.SimpleEngine.popen_uci(binary)
-    # Только поддерживаемые опции
+    engine = chess.engine.SimpleEngine.popen_uci("./engine")
     engine.configure({
         "Skill Level": 20,
         "Hash": 256,
         "Threads": 1,
         "Move Overhead": 50,
     })
-    # Если движок поддерживает Contempt (не для Stockfish), пробуем добавить, но не падаем
-    try:
-        if "berserk" in binary.lower():
-            engine.configure({"Contempt": 15})
-        elif "clover" in binary.lower():
-            engine.configure({"Contempt": -15})
-    except:
-        pass  # Игнорируем, если опция не поддерживается
 
 @app.on_event("startup")
 async def startup():
