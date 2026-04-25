@@ -1,4 +1,4 @@
-import os, chess, chess.engine
+import chess, chess.engine
 from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
@@ -9,7 +9,7 @@ def init_engine():
     engine = chess.engine.SimpleEngine.popen_uci("./engine")
     engine.configure({
         "Skill Level": 20,
-        "Hash": 256,
+        "Hash": 128,
         "Threads": 1,
         "Move Overhead": 50,
     })
@@ -31,4 +31,5 @@ async def get_move(data: dict):
         result = await engine.play(board, chess.engine.Limit(time=move_time))
         return {"move": result.move.uci() if result.move else None}
     except Exception as e:
+        print(f"Ошибка: {e}")
         raise HTTPException(status_code=500, detail=str(e))
