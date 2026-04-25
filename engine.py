@@ -24,14 +24,16 @@ def health():
 
 @app.post("/get_move")
 async def get_move(data: dict):
-    fen = data.get("fen")
-    move_time = data.get("move_time")
-    depth = data.get("depth")
-    board = chess.Board(fen)
-    if depth:
-        result = await engine.play(board, chess.engine.Limit(depth=depth))
-    else:
-        result = await engine.play(board, chess.engine.Limit(time=move_time))
-    return {"move": result.move.uci() if result.move else None}
+    try:
+        fen = data.get("fen")
+        move_time = data.get("move_time")
+        depth = data.get("depth")
+        board = chess.Board(fen)
+        if depth:
+            result = await engine.play(board, chess.engine.Limit(depth=depth))
+        else:
+            result = await engine.play(board, chess.engine.Limit(time=move_time))
+        return {"move": result.move.uci() if result.move else None}
     except Exception as e:
+        print(f"Ошибка: {e}")
         raise HTTPException(status_code=500, detail=str(e))
